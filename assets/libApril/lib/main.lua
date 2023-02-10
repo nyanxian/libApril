@@ -21,7 +21,7 @@ User.set[1] = function()
 	
 end
 
-User.upd[1] = function()
+User.upd[1] = function(args)
 	dt = args.dt; me = entity.id(); pos = mcontroller.position(); cur = tech.aimPosition(); sit = tech.parentLounging()
 	pHand = (world.entityHandItemDescriptor(me,'primary') or nil); aHand = (world.entityHandItemDescriptor(me,'alt') or {})
 	lightlvl = world.lightLevel(mcontroller.position()); ls = mcontroller.walking() -- leftShift
