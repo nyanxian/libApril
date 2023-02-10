@@ -300,7 +300,6 @@ end
 function update(dt) end
 
 function interact(args)
-	setInteracted(args)
 	if type(handleInteract) == "function" then
 		return handleInteract(args) else
 		local interactAction = 'OpenTeleportDialog' -- ScriptPane / OpenTeleportDialog / OpenMerchantInterface / OpenCraftingInterface
