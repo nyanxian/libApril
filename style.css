@@ -1,0 +1,193 @@
+/* Global embedded objects */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Inconsolata&family=Noto+Sans+JP:wght@300;400&family=Ubuntu&display=swap');
+
+/* Global meta-objects */
+::-webkit-scrollbar { width: 0; height: 0; background: #0000 }
+:root {
+	--accent: #c57;
+	--fontMain: 300 3vmin 'Noto Sans JP';
+	--fontRaw: 400 2.5vmin 'Inconsolata';
+	--fontLog: 400 2.5vmin 'Ubuntu';
+}
+::selection { color: var(--accent) }
+::-moz-selection { color: var(--accent) }
+html { scrollbar-width: none; scroll-padding-top: 10vmin; overflow-y: scroll }
+body {
+	font: var(--fontMain); z-index: -10;
+	color: #fff; line-height: 1.2;
+	width: 100vw; height: 100vh;
+	background: #000; margin: 0;
+	overscroll-behavior-x: none;
+	overflow-x: hidden;
+}
+
+/* Global meta-classes */
+.i { margin: auto }
+.n { display: inline-block; margin: 0; white-space: nowrap }
+.nil { pointer-events: none }
+.nosel {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	user-drag: none; 
+	-webkit-user-drag: none;
+}
+.bounded {
+	overflow: hidden;
+	overscroll-behavior-x: none;
+	overscroll-behavior-y: none;
+}
+.break { float: left; width: 100%; height: 1px; margin: 0; display: block }
+.center { display: flex; flex-wrap: wrap; justify-content: center; transition: 0.5s }
+.center p { margin: auto; text-align: center; overflow-wrap: break-word }
+.fill { position: absolute; width: 100%; height: 100%; margin: 0 }
+.text { font: inherit; color: inherit; text-decoration: none; border: none; outline: none }
+.bgFill {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.bgCont {
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.ref {
+	font: var(--fontRef); color: inherit;
+	text-decoration: none; cursor: pointer;
+	transition: color 0.2s
+}
+.ref:hover { color: var(--accent) }
+
+/* Local objects */
+.x {color: #c57}
+#black {
+	font: 12vmin "Dancing Script";
+	width: 100%; height: 100%;
+	background: #000; position: fixed;
+}
+#splash {
+	margin: auto; background: #333;
+	width: 80vmin; height: 40vmin;
+	border: 1vmin solid #c57;
+	border-radius: 5vmin;
+	box-shadow: -5vmin 5vmin 0 #a579;
+}
+#head {
+	width: 100vw; height: 10vmin;
+	background: #292929; margin: 0;
+	border-radius: 0 0 7vmin 7vmin;
+	z-index: 2; position: relative;
+	box-shadow: 0 0.5vmin 10vmin #000;
+}
+#hTitle {
+	background: #0000; color: #fff;
+	font: 5vmin "Dancing Script";
+	width: 50vmin; height: 100%; margin: 0;
+}
+#controls {
+	width: 40vmin; height: 100%;
+	position: absolute; right: 0; top: 0;
+}
+.btn { flex: 1; background: #383838; cursor: pointer; transition: 0.2s }
+.btn:hover { background: #222; border-top: 0.5vmin solid #c57 }
+
+.post {
+	width: 60vmin; height: 80vmin;
+	background: #333;
+	border-radius: 5vmin;
+	margin: 5vmin 3vmin;
+}
+	._title {
+		width: 84%; background: #c57;
+		height: 7%; margin: 0 7%;
+		border-radius: 0 0 3vmin 3vmin;
+		font-weight: 400
+	}
+	._media {
+		position: relative; z-index: 2;
+		width: 100%; height: 30%;
+		box-shadow: 0 2vmin 2vmin #0005;
+		border-top: 0.5vmin solid #0000
+	}
+	._comment {
+		position: relative; z-index: 1;
+		height: 61%; width: 100%;
+		background: #222; margin: 0;
+		border-radius: 0 0 5vmin 5vmin;
+	}
+	._comment p {
+		width: 94%; height: 90%; overflow-y: scroll;
+		display: block; margin: 2vmin 0;
+		text-align: left; padding-left: 1vmin;
+		border-left: 0.5vmin solid #c57;
+		overflow-wrap: break-word;
+	}
+#console {
+	width: 100vmin; height: 80vmin;
+	background: #222; margin: 5vmin;
+	border-radius: 5vmin; position: relative;
+}
+.data {
+	font: var(--fontRaw); color: #fff;
+	margin: 2%; background: none;
+	width: 95%; height: 94%;
+	border: none; outline: none;
+	resize: none; visibility: hidden;
+	overflow-x: scroll; line-height: 1.1;
+	overflow-wrap: nowrap;
+	white-space: nowrap
+}
+#console:hover .data { visibility: visible }
+#console:hover #highlightFrame { visibility: hidden }
+#highlightFrame { position: absolute; top: 0; left: 0; width: 100%; height: 100% }
+#highlight {
+	display: block; margin: 2.5%;
+	width: 95%; height: 94%;
+	text-align: left; font: var(--fontRaw);
+	color: #be8; line-height: 1.1;
+	overflow-x: scroll;
+	overflow-wrap: nowrap;
+	white-space: nowrap;
+}
+
+#terminalBody {
+	font: var(--fontLog);
+	position: relative; z-index: 5;
+	width: 80vw; height: 90vmin;
+	background: #333; margin: auto;
+	border-radius: 3vmin;
+	transform-origin: 50% 0%;
+	animation: popY 0.5s;
+	border: 0.3vmin solid #c57
+}
+#terminalHead { height: 7vmin; width: 100%; background: #c57; box-shadow: 0 1vmin 3vmin #0005; font-size: 4vmin }
+#terminal { height: 72vmin; width: 96%; margin: 2vmin 2%; white-space: nowrap; overflow-y: scroll }
+#terminalInput { height: 7vmin; width: 100%; background: #444; box-shadow: 0 -1vmin 3vmin #0005 }
+#terminalInput:hover { background: #555 }
+#commands {
+	font: var(--fontLog); color: #fff;
+	margin: auto 2%; background: none;
+	width: 96%; height: 6vmin; max-height: 6vmin;
+	border: none; outline: none;
+	resize: none; overflow-x: scroll;
+	overflow-wrap: nowrap;
+	white-space: nowrap
+}
+
+.slide { display: block; animation: pop 0.3s }
+.slided { display: none  }
+/* animations */
+@keyframes fadeout { 0% { opacity: 0 } }
+@keyframes fadein { 100% { opacity: 0 } }
+@keyframes blurout { 0% { filter: blur(1vmin) } }
+@keyframes pop { 0% { transform: scale(0) } }
+@keyframes popY { 0% { transform: scaleY(0) scaleX(0.7) } }
+@keyframes splash {
+	40% { transform: rotate(-20deg) scale(0.7); opacity: 1 }
+	80% { transform: rotate(20deg) scale(1.4); opacity: 1 }
+	100% { opacity: 0 }
+}

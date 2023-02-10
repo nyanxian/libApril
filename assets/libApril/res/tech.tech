@@ -1,0 +1,10 @@
+{
+  "name" : "April",
+  "type" : "body",
+  "scripts" : ["/#a-lib.lua"],
+  "description" : "The ^#ff77aa;April Library^reset; written by ^#ff77aa;April^reset;.",
+  "shortDescription" : "^#ff77aa;April Lib^reset;",
+  "rarity" : "Essential",
+  "icon" : "/res/tech_icon.png",
+  "chipCost" : 0
+}

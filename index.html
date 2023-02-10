@@ -1,0 +1,121 @@
+<!DOCTYPE html> <html id='html' lang='en' dir='ltr'>
+	<head> <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="assets/icon.ico">
+		<title id="title">April's Kitchen Notes</title>
+		<meta name='description' content="April's notes for Starbound Lua scripting." />
+		<meta name='keywords' content='starbound, lua, starbound lua guide, starbound script, starbound modding, starbound tech' />
+		<link rel="stylesheet" href="style.css">
+		<!-- Twemoji <3 -->
+		<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+		<style> img.emoji { width: 1em; pointer-events: none } </style>
+	</head>
+	
+	<body id='body' class='center' onload="init()" tabIndex=0 onclick>
+		<script src="main.js"></script>
+		<!-- https://github.com/fengari-lua/fengari-web
+		Copyright © 2017 Benoit Giannangeli | Copyright © 2017-2018 Daurnimator -->
+		<script src="fengari-web.js" type="text/javascript"></script>
+		
+		<div id='black' class='center nosel nil' style='z-index: 10'>
+			<div id='splash' class='center'>
+				<p><x style='color: #c57'>April's</x><br>Kitchen Notes</p>
+			</div>
+		</div>
+		
+		<div id='head' class='bounded'>
+			<div id='hTitle' class='center'><p style='margin-left: 8vmin'>April's Kitchen Notes</p></div>
+			<div class='center' style='width: 10vmin; height: 10vmin; color: #c57; position: absolute; top: 0vmin; left: 47vmin; font-size: 4vmin'><p id='ind'></p></div>
+			<div id='controls' class='center bounded nosel'>
+				<div class='center btn' onclick="slide('p', 'L'); push('-')"><p>＜</p></div>
+				<div class='center btn' style='border-left: 0.3vmin solid #000; border-right: 0.3vmin solid #000' onclick="emi('terminalFrame').style.display='flex'"><p>{ }</p></div>
+				<div class='center btn' onclick="slide('p', 'R'); push()"><p>＞</p></div>
+			</div>
+		</div>
+		
+		<div id='terminalFrame' class='center fill' style='position: fixed; background: #0008; z-index: 3; display: none'>
+			<div class='fill' onclick="emi('terminalFrame').style.display='none'"></div>
+			<div id='terminalBody' class='bounded'>
+				<div id='terminalHead' class='center nosel'><p>Terminal　::　type '/help' for info</p></div>
+				<div id='terminal'></div>
+				<div id='terminalInput' class='center'><input type='text' id='commands' spellcheck='false' onkeydown="if(event.keyCode==13){terminal()}"></input></div>
+			</div>
+		</div>
+		
+		<div class='post bounded' id='p1'>
+			<div class='_title center nosel'><p>Introduction 🗿💤</p></div>
+			<div class='_media bgCont nosel' style='background-image: url("assets/sneeze.gif")'></div>
+			<div class='_comment center bounded'><p>
+				Hello. 😳 This is a compilation of useful Lua notes and materials for Starbound.<br>
+				This box is scrollable. 🤯‼<br><br>🖱 First of all - let's walk through interface controls on this page:<br>
+				<x style="color:#c57">1.</x> The box right to this one is a Lua editor.<br>
+				<x style="color:#c57">2.</x> The number right to logo(?) defines current page.<br>
+				<x style="color:#c57">3.</x> Three buttons on the top right corner are:<br>
+				pageScroll(L), terminal, pageScroll(R)<br><br>
+				Let's quickly inspect Lua syntax in the editor. 🔎
+			</p></div>
+		</div>
+		<div class='post bounded slided' id='p2'>
+			<div class='_title center nosel'><p>Building a library</p></div>
+			<div class='_media bgCont nosel' style='background-image: url("assets/p2.png")'></div>
+			<div class='_comment center bounded'><p>
+				📚 Let's start with building a test library. You can download the archive 
+				<a class='text x' href='assets/libApril.zip' download>here</a>.<br><br>
+				Put the folder from archive in the <x class='x'>/mods</x> directory.<br><br>Now we'll create and define a new test script 📄:<br>
+				<x class='x'>1.</x> Let's call it <x class='x'>main.lua</x> and put it in the local <x class='x'>/lib</x> directory;<br>
+				<x class='x'>2.</x> Then we'll define it in the <x class='x'>#a-lib.lua</x>, just like in the editor.
+			</p></div>
+		</div>
+		<div class='post bounded slided' id='p3'>
+			<div class='_title center nosel'><p>Writing a script</p></div>
+			<div class='_media bgCont nosel' style='background-image: url("assets/p3.png")'></div>
+			<div class='_comment center bounded'><p>
+				Now that we've created and defined <x class='x'>main.lua</x>, let's initiate it.<br>
+				We'll use <x class='x'>[1]</x> instead of function's name because the main script
+				should be initiated first in the list. 🔢<br><br>
+				ℹ Number one thing we'll need is <x class='x'>print()</x> function, it will display information
+				in the <x class='x'>/storage/starbound.log</x> file. We'll build it in the init.<br><br>
+				Next is a bunch of binds to our in-game input actions, they'll go to update function.
+			</p></div>
+		</div>
+		<div class='post bounded slided' id='p4'>
+			<div class='_title center nosel'><p>Where things get spicy 🔥</p></div>
+			<div class='_media bgCont nosel' style='background-image: url("assets/p4.png")'></div>
+			<div class='_comment center bounded'><p>
+				You probably wonder how to define JSON in Lua, as well as do some crazy stuff...<br>🤔❓
+				Well, let's walk through some of it while making a <x class='x'>custom entity</x>!<br><br>
+				Let's add another script to our library, we'll call it <x class='x'>entities.lua</x>.<br><br>
+				What kind of entity are we gonna be making? Let it be a firefly, it produces pleasant light. 🦗💡
+			</p></div>
+		</div>
+		<div class='post bounded slided' id='p5'>
+			<div class='_title center nosel'><p>Scripted entity</p></div>
+			<div class='_media bgCont nosel' style='background-image: url("assets/p5.png")'></div>
+			<div class='_comment center bounded'><p>
+				🧱 Before anything, our entity will need a custom script to follow instructions from.<br><br>
+				There will already be one in <x class='x'>/res</x> directory, which is <x class='x'>mob.lua</x>. 
+				You can always use it by default.<br><br>There's nothing but 
+				<x class='x'>self.parentEntity = config.getParameter("parentEntity")</x> that is necessary for the entity script.<br><br>
+				From this script you can make your monster entity interactive <x class='x'>("interactive", true)</x> 
+				while putting JSON <x class='x'>interactData</x> in the <x class='x'>local data = { }</x> table.<br><br>
+				Let's take a look at the teleporter entity script. 🛰
+			</p></div>
+		</div>
+		<div class='post bounded slided' id='p6'>
+			<div class='_title center nosel'><p>'Firefly' by April</p></div>
+			<div class='_media bgCont nosel' style='background-image: url("assets/p6.png")'></div>
+			<div class='_comment center bounded'><p>
+				Okay, now we've covered the JSON problem, along with a bunch of other ones. 
+				This means... It's time for practice! 🙀💥<br><br>
+				Let's take a look at the finished firefly wrapped in our script. ✨
+			</p></div>
+		</div>
+		
+		<div id='console'>
+			<textarea id='raw' class='data' spellcheck='false' oninput="highlight('raw', 'highlight')"></textarea>
+			<div id='highlightFrame' class='nosel nil'> <p id='highlight'></p> </div>
+		</div>
+		
+	</body>
+	
+</html>
