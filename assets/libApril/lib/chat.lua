@@ -9,12 +9,13 @@ User.upd.funcname = function() if chat and chat.input then
 	if cmd then  if input.keyUp('Return') then
 		-- commands list
 		if cmd:sub(1, cmd:len())==('/cmd') then
-			chat.addMessage([[Commands list:
-		/dir -- directives, ex:: /dir ?scalenearest=0.5
-		/si /sp /sm /sn /sv -- spawn item/projectile/monster/npc/vehicle, ex:: /sm poptop 9
+			chat.addMessage(string.gsub([[^#f77;Commands list:^reset;
+		/dir -- directives >> /dir ?scalenearest=0.5
+		/si /sp /sm /sn /sv -- spawn
+		(item/projectile/monster/npc/vehicle) >> /sm poptop 9
 		/hide -- hide player
-		/. -- execute Lua from string, ex:: /. print('Hello there!')
-		]], { mode='CommandResult', portrait='/assetmissing.png', fromNick='April@nyanxian', showPane=true })
+		/. -- execute Lua from string >> /. print('Hello there!')
+		]], '		', '', 20), { mode='CommandResult', fromNick='^#f7a;libApril^reset;' })
 		end
 		-- directives
 		if cmd:match('dir') then
