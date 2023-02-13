@@ -2,6 +2,6 @@
 	{
 		"op": "add",
 		"path": "/deploymentConfig/scripts/-",
-		"value": "/#load.lua"
+		"value": "/a.load.lua"
 	}
 ]

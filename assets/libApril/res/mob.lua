@@ -18,12 +18,16 @@ function init()
 		monster.setDamageBar(config.getParameter("damageBar"));
 	end
 	
+	status.setPersistentEffects('mob', { {stat='statusImmunity', amount=1}, {stat='invulnerable', amount=1} })
 	monster.setInteractive(config.getParameter("interactive", false))
 end
 
 function update(dt)
 	if (not hidden) and (status.resourcePercentage("health") < 1) then status.setResourcePercentage("health", 1) end
 	animator.rotateTransformationGroup('body', mcontroller.rotation())
+	--[[ if mcontroller.xVelocity()<0 then
+		animator.setFlipped(true) else animator.setFlipped(false)
+	end ]]
 end
 
 function interact(args)
