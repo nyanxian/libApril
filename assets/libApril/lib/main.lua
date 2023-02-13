@@ -22,7 +22,7 @@ User.set[1] = function()
 		sb.logInfo('[[\n'..table.concat(log, '\n')..'\n]]')
 	end
 	
-	gprint = function(...) -- graphical print (around cursor), 2 levels
+	gprint = function(...) -- graphical print (around player), 2 levels
 		local gLog = {...}
 		for i, v in ipairs(gLog) do
 			if not (type(v) == 'table') then gLog[i] = tostring(v)
@@ -38,7 +38,7 @@ User.set[1] = function()
 				gLog[i] = '<'..tostring(v)..'> {\n'..table.concat(print_lvl.g1, '\n')..'\n}\n'; print_lvl.g1 = {}
 			end
 		end
-		world.spawnProjectile("roar", cur, me, {0,0}, true, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00", periodicActions = {
+		world.spawnProjectile("roar", pos, me, {0,0}, true, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00", periodicActions = {
 			{ ["time"] = 0.0, ["repeat"] = false, action = "particle", specification = {
 				type = "text",  size = 0.35, layer = "front", destructionAction = "fade",
 				collidesForeground = false, ignoreWind = true, text = table.concat(gLog, '\n'),
