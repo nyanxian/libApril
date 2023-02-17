@@ -1,57 +1,66 @@
-User.set[1] = function()
+User.set.main = function()
 	lightlvl = world.lightLevel(mcontroller.position()); pos = mcontroller.position()
 	mcontroller.controlParameters({ collisionEnabled=true, physicsEffectCategories={root_username} })
 	
-	print_lvl = { {}, {}, g1={}, g2={} }
+	print_lvl = { {}, {} }
 	print = function(...) -- ['starbound.log'] print, 2 levels
 		local log = {...}
 		for i, v in ipairs(log) do
-			if not (type(v) == 'table') then log[i] = tostring(v)
+			if not (type(v) == 'table') then log[i] = '	'..tostring(v)
 				else for i1, v1 in pairs(v) do -- level 1
-					if not (type(v1) == 'table') then table.insert(print_lvl[1], '	'..tostring(i1)..' = '..tostring(v1))
-						else table.insert(print_lvl[1], '	'..tostring(i1)..' = {')
+					if not (type(v1) == 'table') then table.insert(print_lvl[1], '		'..tostring(i1)..' = '..tostring(v1))
+						else table.insert(print_lvl[1], '		'..tostring(i1)..' = {')
 						for i2, v2 in pairs(v1) do -- level 2
-							table.insert(print_lvl[2], '		'..tostring(i2)..' = '..tostring(v2))
+							table.insert(print_lvl[2], '			'..tostring(i2)..' = '..tostring(v2))
 						end
-						table.insert(print_lvl[1], table.concat(print_lvl[2], '\n')..'\n	}'); print_lvl[2] = {}
+						table.insert(print_lvl[1], table.concat(print_lvl[2], '\n')..'\n		}'); print_lvl[2] = {}
 					end
 				end
-				log[i] = '<'..tostring(v)..'> {\n'..table.concat(print_lvl[1], '\n')..'\n}\n'; print_lvl[1] = {}
+				log[i] = '	'..i..' = {\n'..table.concat(print_lvl[1], '\n')..'\n	}\n'; print_lvl[1] = {}
 			end
 		end
 		sb.logInfo('[[\n'..table.concat(log, '\n')..'\n]]')
+		return table.concat(log, '\n')
 	end
 	
-	gprint = function(...) -- graphical print (around player), 2 levels
-		local gLog = {...}
-		for i, v in ipairs(gLog) do
-			if not (type(v) == 'table') then gLog[i] = tostring(v)
-				else for i1, v1 in pairs(v) do -- level 1
-					if not (type(v1) == 'table') then table.insert(print_lvl.g1, '> '..tostring(i1)..' = '..tostring(v1))
-						else table.insert(print_lvl.g1, '> '..tostring(i1)..' = {')
-						for i2, v2 in pairs(v1) do -- level 2
-							table.insert(print_lvl.g2, '>> '..tostring(i2)..' = '..tostring(v2))
-						end
-						table.insert(print_lvl.g1, table.concat(print_lvl.g2, '\n')..'\n	}'); print_lvl.g2 = {}
-					end
-				end
-				gLog[i] = '<'..tostring(v)..'> {\n'..table.concat(print_lvl.g1, '\n')..'\n}\n'; print_lvl.g1 = {}
-			end
+	gprint = function(...) -- graphical print (chat / around player)
+		local data = print(...)
+		if chat and chat.addMessage then -- github.com/StarExtensions
+			chat.addMessage('\n'..data:gsub('	', '  '), { mode='CommandResult', fromNick='^#59f;print :: result^reset;' })
+			else
+			world.spawnProjectile("roar", pos, me, {0,0}, true, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00",
+				actionOnReap = jarray(), actionOnTimeout = jarray(), actionOnCollide = jarray(), periodicActions = {
+				{ ["time"] = 0.0, ["repeat"] = false, action = "particle", specification = {
+					type = "text",  size = 0.35, layer = "front", destructionAction = "fade",
+					collidesForeground = false, ignoreWind = true, text = data:gsub('	', '  '),
+					position = {math.random(-30, 30)*0.1, math.random(-45, 0)*0.1},
+					color = {math.random(150, 255), math.random(150, 255), math.random(150, 255)},
+					timeToLive = (data:len()*0.02)+0.6, destructionTime = 0.3
+				}} }
+			})
 		end
-		world.spawnProjectile("roar", pos, me, {0,0}, true, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00", periodicActions = {
+	end
+	
+	text = function(vec2, str)
+		world.spawnProjectile("seed", vec2, me, {0,0}, false, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00",
+			actionOnReap = jarray(), actionOnTimeout = jarray(), actionOnCollide = jarray(), periodicActions = {
 			{ ["time"] = 0.0, ["repeat"] = false, action = "particle", specification = {
 				type = "text",  size = 0.35, layer = "front", destructionAction = "fade",
-				collidesForeground = false, ignoreWind = true, text = table.concat(gLog, '\n'),
-				position = {math.random(-30, 30)*0.1, math.random(-45, 0)*0.1},
-				color = {math.random(150, 255), math.random(150, 255), math.random(150, 255)},
-				timeToLive = 1, destructionTime = (table.concat(gLog, '\n'):len()*0.03)+0.6
-			}}
-		}, actionOnReap = jarray(), actionOnTimeout = jarray(), actionOnCollide = jarray()})
+				collidesForeground = false, ignoreWind = true, text = str, timeToLive = 0.7,
+				position = {0, 0}, color = {255, 50, 50}, destructionTime = 0.2
+			}} }
+		})
+	end
+	
+	stun = function()
+		mcontroller.setVelocity({0, 0}); mcontroller.addMomentum({0, 0})
+		mcontroller.zeroG(); mcontroller.setPosition(mcontroller.position())
+		mcontroller.controlParameters({collisionEnabled=false, physicsEffectCategories={root_username}, movementSuppressed=true})
 	end
 	
 end
 
-User.upd[1] = function(args)
+User.upd.main = function(args)
 	dt=args.dt; me=entity.id(); pos=mcontroller.position(); cur=tech.aimPosition(); vel=mcontroller.velocity()
 	pHand=(world.entityHandItemDescriptor(me,'primary') or nil); aHand=(world.entityHandItemDescriptor(me,'alt') or {})
 	sit=tech.parentLounging(); lightlvl=world.lightLevel(mcontroller.position()); ls=mcontroller.walking() -- leftShift
@@ -66,8 +75,8 @@ User.upd[1] = function(args)
 		u=input.keyDown('U'); v=input.keyDown('V'); w=input.keyDown('W'); x=input.keyDown('X')
 		y=input.keyDown('Y'); z=input.keyDown('Z'); sp=input.key('Space'); bsp=input.keyDown('Backspace')
 		esc=input.keyDown('Esc'); ent=input.keyDown('Return'); tab=input.keyDown('Tab');
-		m1=input.mouseDown('MouseLeft'); m2=input.mouseDown('MouseRight'); lc=input.key('LCtrl')
-		m1x=input.mouse('MouseLeft'); m2x=input.mouse('MouseRight');
+		m1=input.mouseDown('MouseLeft'); m2=input.mouseDown('MouseRight'); ctrl=input.key('LCtrl')
+		m1x=input.mouse('MouseLeft'); m2x=input.mouse('MouseRight'); sbl=input.keyDown('['); sbr=input.keyDown(']');
 		f1=input.keyDown('F1'); f2=input.keyDown('F2'); f3=input.keyDown('F3')
 		x1=input.keyDown('1'); x2=input.keyDown('2'); x3=input.keyDown('3'); x4=input.keyDown('4'); x5=input.keyDown('5')
 		x6=input.keyDown('6'); x7=input.keyDown('7'); x8=input.keyDown('8'); x9=input.keyDown('9'); x0=input.keyDown('0')

@@ -190,6 +190,7 @@ print(type(a), type(b), type(c), type(d), type(e), type(f))
 for i = 1, 3 do print('i = '..i) end`,
 
 
+
 `-- Please fill in your data from ['a.load.lua']
 	root_username = 'yourName'
 	root_password = 'yourPassword'
@@ -199,98 +200,127 @@ function plr(funcName, ...)
 	return world.sendEntityMessage(entity.id(), root_username..'::'..root_password, funcName, ...):result()
 end
 
-function init() -- @set
-	require "/scripts/vec2.lua";  require "/scripts/status.lua"
-	
-	-- User library
-	require '/lib/main.lua';
-	require '/lib/entities.lua'
-	require '/lib/chat.lua'
-	require '/lib/test.lua'
-	
-	for _, v in pairs(User.set) do v() end
+function init() -- .set
+	require "/scripts/vec2.lua";  require "/scripts/status.lua";
+	lib_embed = { -- Your scripts (put in execution order)
+		'main',
+		'playerdata',
+		'entities',
+		'chat',
+		'animation',
+		'tilematrix',
+	}
+	for _, v in ipairs(lib_embed) do
+		require('/lib/'..v..'.lua')
+		if type(User.set[v])=='function' then User.set[v]() end
+	end
 end
 
-function update(args) -- @upd
-	for _, v in pairs(User.upd) do v(args) end
+function update(args) -- .upd
+	for _, v in ipairs(lib_embed) do
+		if type(User.upd[v])=='function' then User.upd[v](args) end
+	end
 end
 
-function uninit() -- @rm
-	for _, v in pairs(User.rm) do v() end
+function uninit() -- .rm
+	for _, v in ipairs(lib_embed) do
+		if type(User.rm[v])=='function' then User.rm[v]() end
+	end
 	User = {set = {}, upd = {}, rm = {}}
 end
 
-io = nil; os.execute = nil
+if io then io.popen=nil end; package=nil; os.execute=nil
 script_template = [[
-User.set.funcname = function()
+User.set.scriptname = function()
 	
 end
 
-User.upd.funcname = function()
+User.upd.scriptname = function()
 	
 end
 
-User.rm.funcname = function()
+User.rm.scriptname = function()
 	
 end
-]]`,
+]]
+_changelog = [[^#95f;Changelog (since 2023/02/14)
+> a.lib.lua : redesign from 2023.02.16
+> /lib/*.lua : syntax/performance fixes
+> /res/tech.tech : added animation
++ /util/ : new directory
++ /util/edit.lua : nongame script
++ animation.lua : modular mech animation
++ chat.lua : chat commands
++ tilematrix.lua : copy/paste world chunk
++ playerdata.lua : player image presets
+]]
+_changelog = _changelog: gsub('[\\>]', '^#59f;>^reset;'): gsub('[\\+]', '^#9f5;+^reset;'): gsub('[\\-]', '^#f55;-^reset;'): gsub('[\\:]', '^#f85;:^reset;')`,
 
 
 
-`User.set[1] = function()
+`User.set.main = function()
 	lightlvl = world.lightLevel(mcontroller.position()); pos = mcontroller.position()
 	mcontroller.controlParameters({ collisionEnabled=true, physicsEffectCategories={root_username} })
 	
-	print_lvl = { {}, {}, g1={}, g2={} }
+	print_lvl = { {}, {} }
 	print = function(...) -- ['starbound.log'] print, 2 levels
 		local log = {...}
 		for i, v in ipairs(log) do
-			if not (type(v) == 'table') then log[i] = tostring(v)
+			if not (type(v) == 'table') then log[i] = '	'..tostring(v)
 				else for i1, v1 in pairs(v) do -- level 1
-					if not (type(v1) == 'table') then table.insert(print_lvl[1], '	'..tostring(i1)..' = '..tostring(v1))
-						else table.insert(print_lvl[1], '	'..tostring(i1)..' = {')
+					if not (type(v1) == 'table') then table.insert(print_lvl[1], '		'..tostring(i1)..' = '..tostring(v1))
+						else table.insert(print_lvl[1], '		'..tostring(i1)..' = {')
 						for i2, v2 in pairs(v1) do -- level 2
-							table.insert(print_lvl[2], '		'..tostring(i2)..' = '..tostring(v2))
+							table.insert(print_lvl[2], '			'..tostring(i2)..' = '..tostring(v2))
 						end
-						table.insert(print_lvl[1], table.concat(print_lvl[2], '\\n')..'\\n	}'); print_lvl[2] = {}
+						table.insert(print_lvl[1], table.concat(print_lvl[2], '\\n')..'\\n		}'); print_lvl[2] = {}
 					end
 				end
-				log[i] = '<'..tostring(v)..'> {\\n'..table.concat(print_lvl[1], '\\n')..'\\n}\\n'; print_lvl[1] = {}
+				log[i] = '	'..i..' = {\\n'..table.concat(print_lvl[1], '\\n')..'\\n	}\\n'; print_lvl[1] = {}
 			end
 		end
 		sb.logInfo('[[\\n'..table.concat(log, '\\n')..'\\n]]')
+		return table.concat(log, '\\n')
 	end
 	
-	gprint = function(...) -- graphical print (around cursor), 2 levels
-		local gLog = {...}
-		for i, v in ipairs(gLog) do
-			if not (type(v) == 'table') then gLog[i] = tostring(v)
-				else for i1, v1 in pairs(v) do -- level 1
-					if not (type(v1) == 'table') then table.insert(print_lvl.g1, '> '..tostring(i1)..' = '..tostring(v1))
-						else table.insert(print_lvl.g1, '> '..tostring(i1)..' = {')
-						for i2, v2 in pairs(v1) do -- level 2
-							table.insert(print_lvl.g2, '>> '..tostring(i2)..' = '..tostring(v2))
-						end
-						table.insert(print_lvl.g1, table.concat(print_lvl.g2, '\\n')..'\\n	}'); print_lvl.g2 = {}
-					end
-				end
-				gLog[i] = '<'..tostring(v)..'> {\\n'..table.concat(print_lvl.g1, '\\n')..'\\n}\\n'; print_lvl.g1 = {}
-			end
+	gprint = function(...) -- graphical print (chat / around player)
+		local data = print(...)
+		if chat and chat.addMessage then -- github.com/StarExtensions
+			chat.addMessage('\\n'..data:gsub('	', '  '), { mode='CommandResult', fromNick='^#59f;print :: result^reset;' })
+			else
+			world.spawnProjectile("roar", pos, me, {0,0}, true, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00",
+				actionOnReap = jarray(), actionOnTimeout = jarray(), actionOnCollide = jarray(), periodicActions = {
+				{ ["time"] = 0.0, ["repeat"] = false, action = "particle", specification = {
+					type = "text",  size = 0.35, layer = "front", destructionAction = "fade",
+					collidesForeground = false, ignoreWind = true, text = data:gsub('	', '  '),
+					position = {math.random(-30, 30)*0.1, math.random(-45, 0)*0.1},
+					color = {math.random(150, 255), math.random(150, 255), math.random(150, 255)},
+					timeToLive = (data:len()*0.02)+0.6, destructionTime = 0.3
+				}} }
+			})
 		end
-		world.spawnProjectile("roar", cur, me, {0,0}, true, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00", periodicActions = {
+	end
+	
+	text = function(vec2, str)
+		world.spawnProjectile("seed", vec2, me, {0,0}, false, { timeToLive = 0.0, damageType = "nodamage", processing = "?multiply=FFFFFF00",
+			actionOnReap = jarray(), actionOnTimeout = jarray(), actionOnCollide = jarray(), periodicActions = {
 			{ ["time"] = 0.0, ["repeat"] = false, action = "particle", specification = {
 				type = "text",  size = 0.35, layer = "front", destructionAction = "fade",
-				collidesForeground = false, ignoreWind = true, text = table.concat(gLog, '\\n'),
-				position = {math.random(-30, 30)*0.1, math.random(-45, 0)*0.1},
-				color = {math.random(150, 255), math.random(150, 255), math.random(150, 255)},
-				timeToLive = 1, destructionTime = (table.concat(gLog, '\\n'):len()*0.03)+0.6
-			}}
-		}, actionOnReap = jarray(), actionOnTimeout = jarray(), actionOnCollide = jarray()})
+				collidesForeground = false, ignoreWind = true, text = str, timeToLive = 0.7,
+				position = {0, 0}, color = {255, 50, 50}, destructionTime = 0.2
+			}} }
+		})
+	end
+	
+	stun = function()
+		mcontroller.setVelocity({0, 0}); mcontroller.addMomentum({0, 0})
+		mcontroller.zeroG(); mcontroller.setPosition(mcontroller.position())
+		mcontroller.controlParameters({collisionEnabled=false, physicsEffectCategories={root_username}, movementSuppressed=true})
 	end
 	
 end
 
-User.upd[1] = function(args)
+User.upd.main = function(args)
 	dt=args.dt; me=entity.id(); pos=mcontroller.position(); cur=tech.aimPosition(); vel=mcontroller.velocity()
 	pHand=(world.entityHandItemDescriptor(me,'primary') or nil); aHand=(world.entityHandItemDescriptor(me,'alt') or {})
 	sit=tech.parentLounging(); lightlvl=world.lightLevel(mcontroller.position()); ls=mcontroller.walking() -- leftShift
@@ -305,8 +335,8 @@ User.upd[1] = function(args)
 		u=input.keyDown('U'); v=input.keyDown('V'); w=input.keyDown('W'); x=input.keyDown('X')
 		y=input.keyDown('Y'); z=input.keyDown('Z'); sp=input.key('Space'); bsp=input.keyDown('Backspace')
 		esc=input.keyDown('Esc'); ent=input.keyDown('Return'); tab=input.keyDown('Tab');
-		m1=input.mouseDown('MouseLeft'); m2=input.mouseDown('MouseRight'); lc=input.key('LCtrl')
-		m1x=input.mouse('MouseLeft'); m2x=input.mouse('MouseRight');
+		m1=input.mouseDown('MouseLeft'); m2=input.mouseDown('MouseRight'); ctrl=input.key('LCtrl')
+		m1x=input.mouse('MouseLeft'); m2x=input.mouse('MouseRight'); sbl=input.keyDown('['); sbr=input.keyDown(']');
 		f1=input.keyDown('F1'); f2=input.keyDown('F2'); f3=input.keyDown('F3')
 		x1=input.keyDown('1'); x2=input.keyDown('2'); x3=input.keyDown('3'); x4=input.keyDown('4'); x5=input.keyDown('5')
 		x6=input.keyDown('6'); x7=input.keyDown('7'); x8=input.keyDown('8'); x9=input.keyDown('9'); x0=input.keyDown('0')
@@ -351,23 +381,62 @@ function interact(args)
 	if type(handleInteract) == "function" then
 		return handleInteract(args) else
 		local interactAction = 'OpenTeleportDialog' -- ScriptPane / OpenTeleportDialog / OpenMerchantInterface / OpenCraftingInterface
-		if interactAction then
+		if world.entityUniqueId(args.sourceId):len()==32 then
 			local data = {
 				destinations = {
-					{name = "Back To Home", planetName = "Home", warpAction = "OwnShip", icon = "beamup"},
-					{name = "Warp to Outpost", planetName = "Outpost", warpAction = "InstanceWorld:outpost=outpost", icon = "outpost"},
-					{name = "Warp to Ark", planetName = "Ark", warpAction = "InstanceWorld:outpost=arkteleporter", icon = "ark"},
-					{name = "Electric", planetName = "Ancient Vault", warpAction = "InstanceWorld:ancientvault_electric", icon = "savannah"},
-					{name = "Ice", planetName = "Ancient Vault", warpAction = "InstanceWorld:ancientvault_ice", icon = "arctic"},
-					{name = "Poison", planetName = "Ancient Vault", warpAction = "InstanceWorld:ancientvault_poison", icon = "toxic"},
-					{name = "Fire", planetName = "Ancient Vault", warpAction = "InstanceWorld:ancientvault_fire", icon = "magma"},
-					{name = "Human Mission", planetName = "Lunar Base", warpAction = "InstanceWorld:lunarbase", icon = "moon"},
-					{name = "Floran Mission", planetName = "Hunting Caverns", warpAction = "InstanceWorld:floranmission1", icon = "forest"},
-					{name = "Hylotl Mission", planetName = "Pagoda Library", warpAction = "InstanceWorld:hylotlmission1", icon = "ocean"},
-					{name = "Avian Mission", planetName = "Kluex Temple", warpAction = "InstanceWorld:avianmission1", icon = "desert"},
-					{name = "Apex Mission", planetName = "Miniknog Stronghold", warpAction = "InstanceWorld:apexmission1", icon = "jungle"},
-					{name = "Glitch Mission", planetName = "The Barons Keep", warpAction = "InstanceWorld:glitchmission1", icon = "garden"},
-					{name = "Final Boss", planetName = "The Ruin", warpAction = "InstanceWorld:tentaclemission", icon = "tentacle"},
+				-- Main
+					{name = "Warp up", planetName = "OwnShip", warpAction = "OwnShip", icon = "beamup"},
+					{name = "Warp to Outpost", planetName = "outpost=outpost", warpAction = "InstanceWorld:outpost=outpost", icon = "outpost"},
+					{name = "Warp to Ark", planetName = "outpost=arkteleporter", warpAction = "InstanceWorld:outpost=arkteleporter", icon = "ark"},
+					{name = "Warp to Museum", planetName = "museum", warpAction = "InstanceWorld:museum", icon = "ark"},
+					{name = "Cyberspace", planetName = "cyberspace", warpAction = "InstanceWorld:cyberspace", icon = "alien"},
+					{name = "Player Station", planetName = "playerstation", warpAction = "InstanceWorld:playerstation", icon = "spacestation"},
+				-- Quest
+					{name = "Introduction", planetName = "protectorate", warpAction = "InstanceWorld:protectorate", icon = "garden"},
+					{name = "Lunar Base", planetName = "lunarbase", warpAction = "InstanceWorld:lunarbase", icon = "moon"},
+					{name = "Hunting Caverns", planetName = "floranmission1", warpAction = "InstanceWorld:floranmission1", icon = "forest"},
+					{name = "Pagoda Library", planetName = "hylotlmission1", warpAction = "InstanceWorld:hylotlmission1", icon = "ocean"},
+					{name = "Kluex Temple", planetName = "avianmission1", warpAction = "InstanceWorld:avianmission1", icon = "desert"},
+					{name = "Miniknog Stronghold", planetName = "apexmission1", warpAction = "InstanceWorld:apexmission1", icon = "jungle"},
+					{name = "The Barons Keep", planetName = "glitchmission1", warpAction = "InstanceWorld:glitchmission1", icon = "garden"},
+					{name = "The Ruin", planetName = "tentaclemission", warpAction = "InstanceWorld:tentaclemission", icon = "tentacle"},
+					{name = "Penguin Mission: 1", planetName = "penguinmission1", warpAction = "InstanceWorld:penguinmission1", icon = "snow"},
+					{name = "Penguin Mission: 2", planetName = "penguinmission2", warpAction = "InstanceWorld:penguinmission2", icon = "snow"},
+				-- Challenge
+					{name = "Ancient Vault: Electric", planetName = "ancientvault_electric", warpAction = "InstanceWorld:ancientvault_electric", icon = "savannah"},
+					{name = "Ancient Vault: Ice", planetName = "ancientvault_ice", warpAction = "InstanceWorld:ancientvault_ice", icon = "arctic"},
+					{name = "Ancient Vault: Poison", planetName = "ancientvault_poison", warpAction = "InstanceWorld:ancientvault_poison", icon = "toxic"},
+					{name = "Ancient Vault: Fire", planetName = "ancientvault_fire", warpAction = "InstanceWorld:ancientvault_fire", icon = "magma"},
+					{name = "Challenge Rooms", planetName = "challengerooms", warpAction = "InstanceWorld:challengerooms", icon = "ancientgateway"},
+					{name = "Anomaly", planetName = "spaceencounter", warpAction = "InstanceWorld:spaceencounter", icon = "spacestation"},
+					{name = "Bounty Anomaly", planetName = "bountyspaceencounter", warpAction = "InstanceWorld:bountyspaceencounter", icon = "spacestation"},
+					{name = "Bounty Ship", planetName = "bountyshipencounter", warpAction = "InstanceWorld:bountyshipencounter", icon = "spacestation"},
+					{name = "Pirate Ship", planetName = "pirateship", warpAction = "InstanceWorld:pirateship", icon = "spacestation"},
+					{name = "Cultist Ship", planetName = "cultistship", warpAction = "InstanceWorld:cultistship", icon = "spacestation"},
+					{name = "Penguin Ship", planetName = "penguinship", warpAction = "InstanceWorld:penguinship", icon = "spacestation"},
+				-- Neutral
+					{name = "Research Ship", planetName = "researchship", warpAction = "InstanceWorld:researchship", icon = "spacestation"},
+					{name = "Merchant Astro Ship", planetName = "merchantastroship", warpAction = "InstanceWorld:merchantastroship", icon = "spacestation"},
+					{name = "Merchant Industrial Ship", planetName = "merchantindustrialship", warpAction = "InstanceWorld:merchantindustrialship", icon = "spacestation"},
+					{name = "Spacestation: Electronics", planetName = "spacestation_electronics", warpAction = "InstanceWorld:spacestation_electronics", icon = "spacestation"},
+					{name = "Spacestation: Food", planetName = "spacestation_food", warpAction = "InstanceWorld:spacestation_food", icon = "spacestation"},
+					{name = "Spacestation: Medical", planetName = "spacestation_medical", warpAction = "InstanceWorld:spacestation_medical", icon = "spacestation"},
+					{name = "Spacestation: Weapons", planetName = "spacestation_weapons", warpAction = "InstanceWorld:spacestation_weapons", icon = "spacestation"},
+					{name = "Spacestation: Peacekeeper [1]", planetName = "spacestation_peacekeeper1", warpAction = "InstanceWorld:spacestation_peacekeeper1", icon = "spacestation"},
+					{name = "Spacestation: Peacekeeper [2]", planetName = "spacestation_peacekeeper2", warpAction = "InstanceWorld:spacestation_peacekeeper2", icon = "spacestation"},
+					{name = "Spacestation: Peacekeeper [3]", planetName = "spacestation_peacekeeper3", warpAction = "InstanceWorld:spacestation_peacekeeper3", icon = "spacestation"},
+					{name = "Spacestation: Peacekeeper [4]", planetName = "spacestation_peacekeeper4", warpAction = "InstanceWorld:spacestation_peacekeeper4", icon = "spacestation"},
+					{name = "Spacestation: Peacekeeper [5]", planetName = "spacestation_peacekeeper5", warpAction = "InstanceWorld:spacestation_peacekeeper5", icon = "spacestation"},
+				-- Misc
+					{name = "Floran Arena: 1", planetName = "arena1", warpAction = "InstanceWorld:arena1", icon = "forest"},
+					{name = "Floran Arena: 2", planetName = "arena2", warpAction = "InstanceWorld:arena2", icon = "forest"},
+					{name = "Floran Arena: 3", planetName = "arena3", warpAction = "InstanceWorld:arena3", icon = "forest"},
+					{name = "Cultist Mission", planetName = "cultistmission1", warpAction = "InstanceWorld:cultistmission1", icon = "asteroids"},
+					{name = "Mech Test: Basic", planetName = "mechtestbasic", warpAction = "InstanceWorld:mechtestbasic", icon = "deploy"},
+					{name = "Mech Test: Advanced", planetName = "mechtestadvanced", warpAction = "InstanceWorld:mechtestadvanced", icon = "deploy"},
+					{name = "Tech Challenge: Dash", planetName = "techchallenge_dash", warpAction = "InstanceWorld:techchallenge_dash", icon = "teleporter"},
+					{name = "Tech Challenge: Doublejump", planetName = "techchallenge_doublejump", warpAction = "InstanceWorld:techchallenge_doublejump", icon = "teleporter"},
+					{name = "Tech Challenge: Morphball", planetName = "techchallenge_morphball", warpAction = "InstanceWorld:techchallenge_morphball", icon = "teleporter"},
 				},
 				config = "/interface/warping/returnark.config",
 				includePlayerBookmarks = true,

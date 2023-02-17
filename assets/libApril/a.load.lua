@@ -13,16 +13,12 @@ function init() _init()
 	player.enableTech('libApril')
 	player.equipTech('libApril')
 	
-	if player.setName then player.setName(root_username) end
+	--player.setName(root_username)
 	message.setHandler(root_username..'::'..root_password, function(sameClient, clientSender, funcName, ...)
 		if clientSender then return player[funcName](...) end
 	end)
-	if _G then _G.plr = player
-		sb.logInfo('==> [_G, _ENV, os, io] :: status: unlocked -> active')
-		else sb.logInfo('<== [_G, _ENV, os, io] :: status: locked -- Disable "safeScripts" in ["starbound.cfg"] to unlock.')
-	end
 end
 
 function uninit() _uninit()
-	if player.setName then player.setName(root_username) end
+	--player.setName(root_username)
 end
