@@ -171,7 +171,7 @@ function terminal() {
 	if (input.match(/\/run .*/)) { var input = input.replace('/run ', '');loadstring(input) }
 	if (input=='/lua') { lua(emi('raw').value); out('Check developer console for printed information') }
 	if (input=='/fs') { fullscreen() }
-	if (input=='/res') { out(`<a class='text x' href='assets/libApril.zip' download>libApril.zip</a>`) }
+	if (input=='/res') { out(`<a class='text z' href='assets/libApril.zip' download>libApril.zip</a>`) }
 	
 	emi('commands').value=''
 }
@@ -696,6 +696,48 @@ User.upd.entities = function()
 	end
 	
 end`,
+
+
+
+`-- Changelog in [april.main]
+> a.lib.lua : redesign from 2023.02.16
+> /lib/*.lua : syntax/performance fixes
+> /res/tech.tech : added animation
++ /util/ : new directory
++ /util/edit.lua : nongame script
++ animation.lua : modular mech animation
++ chat.lua : chat commands
++ tilematrix.lua : copy/paste world chunk
++ playerdata.lua : player image presets
+
+
+-- Changelog in [april.assets]
+Deletions:
+	[/highlights.config]
+	No object highlight on hover
+	
+	[/player/stat_primary.animation.patch]
+	No player glow (except for Novakids)
+
+Modifications:
+	[/cinematics/splash.cinematic]
+	Splash screen: you can now set your own image by replacing the "hi.png" file
+	
+	[/playermodes.config]
+	Player modes improvement:
+		Casual: no money cost on death
+		Survival: no material and liquid drop, can always beam up
+		Hardcore: no permadeath, revive costs all money
+	
+	[/itemdrop.config]
+	Item drop [Q] becomes item yeet instead!
+	
+	[/interface/windowconfig/playerinventory.config]
+	New item pick/put sounds, no item recycle cooldown
+
+Additions:
+	[/ships/...]
+	Player ships now have (and set to) a custom tilemap`,
 ]
 function push(lvl) {
 	if (lvl && source[lvl]) { emi('raw').value = source[lvl]; pass=lvl }

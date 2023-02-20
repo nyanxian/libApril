@@ -23,7 +23,6 @@ body {
 
 /* Global meta-classes */
 .i { margin: auto }
-.n { display: inline-block; margin: 0; white-space: nowrap }
 .nil { pointer-events: none }
 .nosel {
 	-webkit-touch-callout: none;
@@ -55,6 +54,11 @@ body {
 	background-position: center;
 	background-repeat: no-repeat;
 }
+.pixel {
+	-ms-interpolation-mode: nearest-neighbor;
+	image-rendering: crisp-edges;
+	image-rendering: pixelated;
+}
 .ref {
 	font: var(--fontRef); color: inherit;
 	text-decoration: none; cursor: pointer;
@@ -64,6 +68,7 @@ body {
 
 /* Local objects */
 .x {color: #c57}
+.z {color: #96c; cursor: pointer}
 #black {
 	font: 12vmin "Dancing Script";
 	width: 100%; height: 100%;

@@ -1,0 +1,12 @@
+{
+  "config" : {
+    "shipUpgrades" : {
+      "capabilities" : ["teleport", "planetTravel", "systemTravel"],
+      "crewSize" : 100
+    }
+  },
+  
+  "backgroundOverlays" : [],
+  "blockKey" : "custom.config:blockKey",
+  "blockImage" : "custom.png"
+}

@@ -1,0 +1,45 @@
+{
+  "skippable" : false,
+  "backgroundColor" : [0, 0, 0, 0],
+  "panels" : [
+	
+    {
+      "drawables" : [
+        { "image" : "/hi.png" }
+      ],
+      "animationFrames" : 1,
+      "startTime" : 0.2,
+      "keyframes" : [
+        {
+          "timecode" : 0,
+		  "frame" : 0,
+          "alpha" : 0,
+          "zoom" : 0.8,
+		  "position" : [450, 280]
+        },
+        {
+          "timecode" : 2,
+		  "frame" : 0,
+          "alpha" : 1
+        },
+		{
+          "timecode" : 5,
+		  "frame" : 0,
+          "alpha" : 1
+        },
+		{
+          "timecode" : 20,
+		  "frame" : 0,
+          "alpha" : 0
+        }
+      ]
+    }
+	
+  ],
+  "audio" : [
+    {
+      "timecode" : 0.2,
+      "resource" : "/sfx/instruments/bassguitar/a0.ogg"
+    }
+  ]
+}
