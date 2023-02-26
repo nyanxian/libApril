@@ -1,4 +1,4 @@
-User.set.test = function()
+User.set.animation = function()
 	parts = {'frontLegJoint', 'frontBoosterFront', 'rightArmFullbright', 'backLeg', 'frontBoosterFullbright', 'frontLeg', 'backLegFullbright',
 		'bodyFullbright', 'frontLegFullbright', 'bodyFront', 'leftArm', 'bodyBack', 'frontBoosterBack', 'rightArm', 'backBoosterBack',
 		'leftArmFullbright', 'backBoosterFront', 'hips', 'backBoosterFullbright', 'backLegJoint'}
@@ -11,10 +11,10 @@ User.set.test = function()
 	animator.setPartTag('backBoosterBack', "directives", '?scalenearest=0')
 end
 
-User.upd.test = function()
+User.upd.animation = function()
 	
 end
 
-User.rm.test = function()
+User.rm.animation = function()
 	
 end
