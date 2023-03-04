@@ -738,6 +738,64 @@ Modifications:
 Additions:
 	[/ships/...]
 	Player ships now have (and set to) a custom tilemap`,
+
+
+
+`-- Generate unique scripted projectile, optionally replace data (set actions to {} in this case)
+function projP(id, actions, data)
+	if temp[id] and world.entityExists(temp[id]) then
+		world.callScriptedEntity(temp[id], 'mcontroller.setPosition', pos)
+		world.callScriptedEntity(temp[id], 'projectile.setTimeToLive', 0.05)
+		else temp[id] = world.spawnProjectile("roar", pos, me, {0,0}, true, data or {
+			timeToLive = 0.05, damageType = 'nodamage', processing = '?multiply=fff0', actionOnReap = jarray(),
+			actionOnTimeout = jarray(), actionOnCollide = jarray(), periodicActions = actions
+		}) --text(vec2.add(pos, {0, -2}), id)
+	end
+end
+function projC(id, actions, data)
+	if temp[id] and world.entityExists(temp[id]) then
+		world.callScriptedEntity(temp[id], 'mcontroller.setPosition', cur)
+		world.callScriptedEntity(temp[id], 'projectile.setTimeToLive', 0.05)
+		else temp[id] = world.spawnProjectile("roar", cur, me, {0,0}, true, data or {
+			timeToLive = 0.05, damageType = 'nodamage', processing = '?multiply=fff0', actionOnReap = jarray(),
+			actionOnTimeout = jarray(), actionOnCollide = jarray(), periodicActions = actions
+		}) --text(vec2.add(pos, {0, -2}), id)
+	end
+end
+
+-- ...
+
+-- How does a persistent moving collision look like:
+if movingCollision then
+	if myCollision and world.entityExists(myCollision) then
+		world.callScriptedEntity(myCollision, 'vehicle.setInteractive', false)
+		world.callScriptedEntity(myCollision, 'mcontroller.setPosition', pos)
+	elseif not (myCollision and world.entityExists(myCollision)) then
+		myCollision = world.spawnVehicle('modularmech', pos, {
+			script='/res/vehicle.lua', parentEntity=me, clientEntityMode=nil,
+			movementSettings = {gravityMultiplier=0, collisionEnabled=false},
+			physicsCollisions = {
+				collision = {
+					categoryBlacklist = {root_username},
+					collisionKind = 'platform', collision = {
+						{-0.6, 1.4}, {0.6, 1.4}, -- upper
+						{0.6, 1.4}, {0.6, -2}, -- right
+						{0.6, -2}, {-0.6, -2}, -- lower
+						{-0.6, -2}, {-0.6, 1.4}  -- left
+					}
+				}
+			},
+			loungePositions = {
+				seat = {
+					part='bodyFront', partAnchor='sitPosition', orientation='sit', cameraFocus=true,
+					armorCosmeticOverrides={head=nil}, cursorOverride='/cursors/reticle0.cursor',
+					statusEffects = { 'invulnerable', 'statusimmunity', {stat='breathProtection', amount=1} }
+				}
+			}
+		})
+	end
+	elseif myCollision and world.entityExists(myCollision) then world.sendEntityMessage(myCollision, '::hide')
+end`,
 ]
 function push(lvl) {
 	if (lvl && source[lvl]) { emi('raw').value = source[lvl]; pass=lvl }

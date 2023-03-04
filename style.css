@@ -131,7 +131,7 @@ body {
 		border-left: 0.5vmin solid #c57;
 		overflow-wrap: break-word;
 	}
-#console {
+#editor {
 	width: 100vmin; height: 80vmin;
 	background: #222; margin: 5vmin;
 	border-radius: 5vmin; position: relative;
@@ -146,8 +146,8 @@ body {
 	overflow-wrap: nowrap;
 	white-space: nowrap
 }
-#console:hover .data { visibility: visible }
-#console:hover #highlightFrame { visibility: hidden }
+#editor:hover .data { visibility: visible }
+#editor:hover #highlightFrame { visibility: hidden }
 #highlightFrame { position: absolute; top: 0; left: 0; width: 100%; height: 100% }
 #highlight {
 	display: block; margin: 2.5%;

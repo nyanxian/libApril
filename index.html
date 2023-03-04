@@ -33,11 +33,14 @@
 			</div>
 		</div>
 		
-		<div id='terminalFrame' class='center fill' style='position: fixed; background: #0008; z-index: 3; display: none'>
+		<div id='terminalFrame' class='center fill' style='position: fixed; background: #0008; z-index: 3'>
 			<div class='fill' onclick="emi('terminalFrame').style.display='none'"></div>
 			<div id='terminalBody' class='bounded'>
 				<div id='terminalHead' class='center nosel'><p>Terminal　::　type '/help' for info</p></div>
-				<div id='terminal'></div>
+				<div id='terminal'>Hi, um... so I slept for 10 hours and ate lots of みかん today. 😴🍊<br>Very productive indeed. But yeah, let's check what's new here! 😱<br><br>
+					You can type <x class='x'>/res</x> to download the library.<br>
+					‼I put some more templates in <x class='z' onclick="slide('p', 8); push(8); emi('terminalFrame').style.display='none'">#8</x> section!<br><br>
+				</div>
 				<div id='terminalInput' class='center'><input type='text' id='commands' spellcheck='false' onkeydown="if(event.keyCode==13){terminal()}"></input></div>
 			</div>
 		</div>
@@ -121,8 +124,17 @@
 				github.com/nyanxian/libApril/tree/full</x>
 			</p></div>
 		</div>
+		<div class='post bounded slided' id='p8'>
+			<div class='_title center nosel'><p>Miscellaneous templates</p></div>
+			<div class='_media bgCont pixel nosel' style='background-image: url("assets/sneeze.gif"); filter: saturate(0) brightness(0.75) contrast(1.3)'></div>
+			<div class='_comment center bounded'><p>
+				You must be wondering now - what's next? 😥<br>Well, first you have to determine how to utilize all the given information.
+				Therefore, you'd probably need some templates to begin with. But not to worry, let's cover this part here and now! ✏<br><br>
+				I threw a few basic templates in the editor, let's review them.
+			</p></div>
+		</div>
 		
-		<div id='console'>
+		<div id='editor'>
 			<textarea id='raw' class='data' spellcheck='false' oninput="highlight('raw', 'highlight')"></textarea>
 			<div id='highlightFrame' class='nosel nil'> <p id='highlight'></p> </div>
 		</div>
